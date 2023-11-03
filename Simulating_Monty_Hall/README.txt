@@ -1,0 +1,9 @@
+This classic statistics problem comes from the Monty Hall game show (if that's the name-- I was born after 2000). The problem is set up as such:
+
+Say you have three doors to pick from, one of which contains a car and the other two a goat. You keep whatever is behind the door. Personally, a goat is probably a better prize seeing that I live in a city and goats don't require insurance. But, suppose you wanted the car. You pick a door and then the host reveals what is behind one of the doors you did not pick and gives you an opportunity to swap your choice. Do you do so?
+
+This is a problem about information in statistics and that's part of what makes it unintuitive-- the host adds infomration to the system. If Monty revealed the door with a car, you would obviously pick that door. It wouldn't be very dramatic. Likewise, he cannot reveal what is behind your door because then, if its a goat, you would swap 100% of the time and if its a car, you wouldn't swap. Again, not very dramatic. 
+
+Because of this, Monty effectively *filters* the set for you. An easier way to think about it (and code that I'm working on writing here and there-- monty hall with n doors, m choices, and o correct doors) is if there were 100 doors and monty reveals 98 incorrect doors. Do you stick with the 1:100 chance you originally had? Probably not.
+
+However, as nice as this is, this can be very unintuitive and, despite explanation to the B215 students, some did not believe us. Thus, I went out and wrote this simulation code to simualte the Monty Hall experiment and thus, derive the proportion of cars you earn by swapping vs not swapping.

@@ -1,0 +1,153 @@
+---
+title: "Monty Hall Simulation"
+subtitle: "B215 Biostatistics with R F23"
+author: "Levi Raskin"
+date: "`r Sys.Date()`"
+output:
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=T)
+suppressMessages(library(dplyr))
+suppressMessages(library(readr))
+```
+
+## Monty Hall
+
+Summary
+
+Three doors, one of which has a car and two have a goat
+
+You pick one door and then the host reveals one of the two unpicked doors has a goat behind it and gives you an opportunity to swap
+
+Example: you choose door 1 and the host reveals that door 3 has a goat. Do you swap to door two?
+
+This is hard and unintuitive. Not swapping gives you a 1 in 3 chance of being correct, but does swapping raise your chances?
+
+## Simulation as a way to solve unintuitive problems
+
+Simulating the above scenario using code provides an easy way for us to test this hypothesis
+
+For loops and sampling are particularly important and, using for loops, we will repeat the door picking 10,000 times. Unintuitive problems therefore can be solved by using code to simulate the situation over and over again.
+
+This method has real world application: it is a useful way to test evolutionary hypotheses. Since we cannot directly observe evolution happening, we must simulate it! Likewise here, since its hard to directly understand why swapping results in 2/3 success to failure, simulation provides a test.
+
+## Not swapping-- setup
+Starting by defining the three doors as a new vector containing our choices, doors 1, 2, and 3.
+
+Then, we create an empty vector to store the results in (called results) of length equal to the number of times we will pick which door is correct
+```{r, eval=T}
+doors <- 1:3
+#an empty vector to store our results in
+results <- rep(NA, 10000)
+```
+
+## Not swapping-- choosing and confirming which result is correct
+We then choose a door by sampling the doors vector (door 1, 2, or 3) once-- that random choice will be our door!
+```{r, eval=T}
+  choice <- sample(doors, 1)
+  print(paste("Which door are we picking: ", choice))
+```
+We sample from doors again to pick which one is correct
+```{r, eval=T}  
+  #which door is correct? 1, 2, or 3
+  correct <- sample(doors, 1)
+  print(paste("Which door is correct: ", correct))
+```
+
+## Not swapping-- testing if we chose the correct door
+And, finally, we just test whether choice and correct are the same door
+```{r, eval=T}
+choice==correct
+```
+  
+## Results
+After doing the above 10,000 times with a for loop we get the proportion of correct doors:
+
+```{r, eval=T, echo = F}
+#Defining the three doors as a new vector containing our choices, doors 1, 2, and 3.
+doors <- 1:3
+#an empty vector to store our results in
+results <- rep(NA, 10000)
+for(i in 1:10000){
+  #initial choice of which door (1, 2, 3)
+  choice <- sample(doors, 1)
+  #which door is correct? 1, 2, or 3
+  correct <- sample(doors, 1)
+  #is our choice the sample as the correct door?
+  results[i] <- choice==correct
+}
+```
+```{r, eval=T}
+table(results)
+print(paste("Proportion correct:", table(results)[2]/sum(table(results))))
+```
+
+## Swapping-- choosing the correct door
+Setup for swapping is exactly the same, by sampling our first choice and the correct door from doors, but the swapping is tricky to write in code
+```{r, eval=T, echo = F}
+choice <- sample(doors, 1)
+#which door is correct; random and independent from the choice 
+correct <- sample(doors, 1)
+```
+```{r, eval=T}
+print(paste("Chosen door:", choice))
+print(paste("Correct door:", correct))
+```
+## Swapping-- swapping
+The swapping code was tricky-- it took me a little while to figure out!! We have to choose which door Monty reveals. Remember, Monty has to reveal a door with a goat
+First, we have the case where the chosen door is the correct door. If/else loops are perfect for this!:
+```{r, eval = T}
+if(choice== correct){
+  wrongdoor <- sample(doors[-choice], size = 1)
+}
+```
+In this above case, the revealed door would be randomly selected from one of the doors that you did not pick. E.g., if you chose 1, and it was correct, 2 or 3 would be randomly revealed
+
+## Swapping-- swapping continued
+The other case, where you chose a wrong door, is a little easier-- because Monty cannot reveal the correct door or what's behind your choice, we can use an else loop to remove both the correct door and the choice from the doors vector. E.g., if you chose 1 and 2 was right, 3 will always be revealed.
+```{r, eval = T}
+if(choice== correct){
+  wrongdoor <- sample(doors[-choice], size = 1)
+}else{
+  wrongdoor <- doors[-c(choice,correct)]
+}
+```
+
+## Swapping-- switching doors!
+Here, our plausible new choices are all the doors that are not revealed to be wrong. This could be done in one step but I did it two. First, we create new choices which removes the revealed incorrect door from 1,2, or 3 and then, from newchoices, we remove our original choice and test if its the correct door.
+```{r, eval = T}
+newchoices <- doors[-wrongdoor]
+finalchoice <- newchoices[-which(newchoices==choice)]
+finalchoice==correct
+```
+
+## Swapping results
+After repeating 10,000 times we get the following results:
+
+```{r, eval=T, echo = F}
+#Defining the three doors as a new vector containing our choices, doors 1, 2, and 3.
+doors <- 1:3
+#an empty vector to store our results in
+results <- rep(NA, 10000)
+for(i in 1:10000){#initial random choice of which door (1, 2, 3)
+choice <- sample(doors, 1)
+#which door is correct; random and independent from the choice 
+correct <- sample(doors, 1)
+#which door host reveals (which has to have a goat)
+if(choice== correct){
+  #from the doors, remove both the choice and correct positions
+  wrongdoor <- sample(doors[-choice], size = 1)}
+else{wrongdoor <- doors[-c(choice,correct)]}
+#new choices not including the wrong door option
+newchoices <- doors[-wrongdoor]
+#here, we swap by removing our original choice from the new choices vector
+finalchoice <- newchoices[-which(newchoices==choice)]
+results[i] <- finalchoice==correct
+}
+```
+```{r, eval=T}
+table(results)
+print(paste("Proportion correct:", table(results)[2]/sum(table(results))))
+```

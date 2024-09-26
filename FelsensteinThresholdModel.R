@@ -71,7 +71,7 @@ p3
 ng <- 1000 #number of MCMC generations
 burnIn <- 0.1*ng
 pf <- 10 #print freq
-acceptableDiff <- 0.05
+acceptableDiff <- 0.1
 
 propFunc <- function(vec){
   return(sum(vec == 0) / length(vec)) 
@@ -146,7 +146,7 @@ for(i in 1:ng){
       break
     }else{
       
-      if(i == 1 || j > 100000){
+      if(i == 1 || j > 50000){
         startLiabilities <- fastBM(tree,
                                    internal = T)
       }else{

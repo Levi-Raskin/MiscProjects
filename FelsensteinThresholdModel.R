@@ -178,7 +178,13 @@ for(i in 1:ng){
 
 dat <- c()
 for(i in burnIn:ng){
-  dat<- c(dat, resList[[i]][7])
+  dat<- c(dat, resList[[i]][8])
 }
 hist(dat) 
-l1[7]
+l1[8]
+
+datDF <- data.frame("mean_liability" = dat)
+ggplot()+
+  geom_density(data = datDF, aes(x=mean_liability), fill = ibm[1])+
+  geom_vline(xintercept = l1[8])
+

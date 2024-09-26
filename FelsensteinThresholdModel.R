@@ -146,7 +146,7 @@ for(i in 1:ng){
       break
     }else{
       
-      if(i == 1 || j > 50000){
+      if(i == 1 || j > 50000){ #mercy kill j>50000
         startLiabilities <- fastBM(tree,
                                    internal = T)
       }else{
@@ -178,7 +178,7 @@ for(i in 1:ng){
 
 dat <- c()
 for(i in burnIn:ng){
-  dat<- c(dat, resList[[i]][11])
+  dat<- c(dat, resList[[i]][7])
 }
 hist(dat) 
-l1[11]
+l1[7]

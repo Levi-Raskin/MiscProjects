@@ -5,6 +5,9 @@ library(tictoc)
 library(TreeTools)
 library(ggtree)
 
+### command + shift + enter to run
+### or click "Run App" in upper right corner
+
 ui <- fluidPage(
 
   sidebarLayout(

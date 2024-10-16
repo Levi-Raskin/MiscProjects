@@ -25,6 +25,13 @@ ui <- fluidPage(
                    value = 100,
                    ticks = F
                  ),
+                 numericInput(
+                   inputId = "rate",
+                   label = "Rate of sequence evolution:",
+                   min = 0,
+                   max = 100,
+                   value = 0.2
+                 ),
                  sliderInput(
                    inputId = "percAmbig",
                    label = "Percent missing traits:",
@@ -89,7 +96,7 @@ server <- function(input, output) {
   observeEvent(input$reRunAnalysis,{
     #populate charMat with A, C, G, T (makes ambiguity easier)
     tic("Simulated data")
-    datMat <- as.matrix(simSeq(trueTree(), l = input$nChar, type = "DNA", rate = 0.2))
+    datMat <- as.matrix(simSeq(trueTree(), l = input$nChar, type = "DNA", rate = input$rate))
     toc() #print statement to r console so that I can track speed
     
     #replace with ambiguous
@@ -103,7 +110,7 @@ server <- function(input, output) {
         babTree <- try(bab(datMat), silent = T)
         
         while(class(babTree) =="try-error"){
-          datMat <- as.matrix(simSeq(trueTree(), l = input$nChar, type = "DNA", rate = 0.2))
+          datMat <- as.matrix(simSeq(trueTree(), l = input$nChar, type = "DNA", rate = input$rate))
           datMat <- phyDat(datMat, type = "DNA")
           babTree <- try(bab(datMat), silent = T)
           print("in while loop")

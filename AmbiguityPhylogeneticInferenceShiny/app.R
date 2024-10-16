@@ -41,6 +41,14 @@ ui <- fluidPage(
                    value = 0,
                    ticks = F
                  ),
+                 sliderInput(
+                   inputId = "replicates",
+                   label = "Number of replicates for ambiguity:",
+                   min = 1,
+                   max = 100,
+                   value = 50,
+                   ticks = F
+                 ),
                  selectInput("method", 
                              label = "Inference method", 
                              choices = list(
@@ -86,7 +94,7 @@ server <- function(input, output) {
     
     #replace with ambiguous
     
-    resVec <- rep(NA, 50)
+    resVec <- rep(NA, input$replicates)
     if(input$method == "Parsimony"){
       if(input$numTaxaAmbig == 0 || input$percAmbig == 0){
         tic("BAB no ambig")
@@ -114,7 +122,7 @@ server <- function(input, output) {
         if (input$numTaxaAmbig > nrow(datMat)) {
           stop("Number of ambiguous taxa exceeds the number of taxa")
         }
-        for(i in 1:50){
+        for(i in 1:input$replicates){
           whichTaxa <- sample(1:nrow(datMat), input$numTaxaAmbig, replace = F)
           ambigMat <- datMat
           ambigMatSubset <- ambigMat[whichTaxa,]

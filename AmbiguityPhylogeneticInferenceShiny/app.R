@@ -166,9 +166,9 @@ server <- function(input, output) {
     }
     
     if(input$numTaxaAmbig == 0 || input$percAmbig == 0){
-      iqr <- NA
+      propAcc <- NA
     }else{
-        iqr <- sum(resVec == 0 ) / length(resVec)
+        propAcc <- sum(resVec == 0 ) / length(resVec)
       }
     
     # Append the new result to the existing results
@@ -176,7 +176,7 @@ server <- function(input, output) {
       "Method" = input$method, 
       "Replicates" = length(na.omit(resVec)), 
       "Median distance" = median(resVec, na.rm = TRUE),
-      "Proportion correct" = iqr,
+      "Proportion correct" = propAcc,
       "Max distance" = max(resVec, na.rm = T)
     )
     
